@@ -22,18 +22,18 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: radial-gradient(circle at 50% 20%, #2c2c2e 0%, #1c1c1e 50%, #0a0a0c 100%);
-      color: var(--text-color); margin: 0; padding: 0; display: flex; flex-direction: column; 
+      color: var(--text-color); margin: 0; padding: 0; display: flex; flex-direction: column;
       align-items: center; -webkit-font-smoothing: antialiased; height: 100vh; overflow: hidden;
     }
     .container { width: 100%; max-width: 600px; height: 100%; display: flex; flex-direction: column; }
-    
+
     #authScreen { padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
     .auth-card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 25px; border-radius: 16px; width: 100%; max-width: 350px; box-sizing: border-box; backdrop-filter: blur(20px); }
-    
+
     #regionScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; }
     #mainScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; }
     #formScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; }
-    
+
     h1, h2 { text-align: center; font-weight: 600; letter-spacing: -0.5px; margin-top: 5px; }
     h1 { margin-bottom: 20px; font-size: 24px; }
     h2 { font-size: 15px; margin-bottom: 5px; }
@@ -52,16 +52,16 @@
     .btn-in-work { width: 100%; background: rgba(255, 188, 0, 0.15); border: 1px solid var(--warning-color); color: #ffd60a; padding: 10px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; margin-top: 5px; text-align: center; }
     .form-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; margin-top: 15px; backdrop-filter: blur(20px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
 
-    .history-card { display: none; height: 100vh; flex-direction: column; box-sizing: border-box; background: rgba(25,25,25,0.95); backdrop-filter: blur(25px); }
+    .history-card { display: none; flex: 1; height: 100%; min-height: 0; overflow: hidden; flex-direction: column; box-sizing: border-box; background: rgba(25,25,25,0.95); backdrop-filter: blur(25px); }
     .history-header-fixed { padding: 6px 10px 2px 10px; border-bottom: 1px solid var(--card-border); background: rgba(25,25,25,0.5); flex-shrink: 0; }
     .history-scrollable-area { flex: 1; overflow-y: auto; padding: 6px 10px; -webkit-overflow-scrolling: touch; }
     .history-footer-fixed { padding: 6px 10px 12px 10px; border-top: 1px solid var(--card-border); background: rgba(255, 255, 255, 0.05); flex-shrink: 0; }
 
     .form-group { margin-bottom: 12px; }
     label { display: block; font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; text-transform: uppercase; }
-    input[type="text"], input[type="password"], input[type="date"], input[type="datetime-local"], select, textarea { 
-      width: 100%; box-sizing: border-box; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); 
-      border-radius: 10px; padding: 12px; color: var(--text-color); font-size: 15px; font-family: inherit; color-scheme: dark; 
+    input[type="text"], input[type="password"], input[type="date"], input[type="datetime-local"], select, textarea {
+      width: 100%; box-sizing: border-box; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border);
+      border-radius: 10px; padding: 12px; color: var(--text-color); font-size: 15px; font-family: inherit; color-scheme: dark;
     }
     input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-color); }
 
@@ -81,7 +81,7 @@
 
     .btn-submit { background: var(--accent-color); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
     .btn-back { background: transparent; color: var(--danger-color); border: 1px solid rgba(255, 69, 58, 0.23); padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
-    
+
     .stats-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 1px; text-align: center; }
     .stat-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 6px; padding: 4px 1px; }
     .stat-val { font-size: 13px; font-weight: 700; margin-bottom: 0px; line-height: 1.2; }
@@ -92,7 +92,7 @@
     .stat-card.overdue-tasks .stat-val { color: var(--danger-color); }
     .stat-card.latedone-tasks .stat-val { color: var(--late-done-color); }
 
-    .stats-screen-card { display: none; height: 100vh; flex-direction: column; box-sizing: border-box; background: rgba(20,20,22,0.98); backdrop-filter: blur(25px); }
+    .stats-screen-card { display: none; flex: 1; height: 100%; min-height: 0; overflow: hidden; flex-direction: column; box-sizing: border-box; background: rgba(20,20,22,0.98); backdrop-filter: blur(25px); }
     .stats-grid-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
     .stat-box { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; text-align: center; }
     .stat-box .title { font-size: 10.5px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; }
@@ -105,7 +105,7 @@
     .task-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 12.5px; }
     .task-item.urgent-task { background: linear-gradient(135deg, rgba(255, 69, 58, 0.14) 0%, rgba(255, 69, 58, 0.04) 100%); border: 1.5px solid rgba(255, 69, 58, 0.5); }
     .task-item.overdue-task { background: var(--overdue-bg) !important; border: 1.5px solid var(--overdue-border) !important; box-shadow: none !important; }
-    
+
     .urgent-badge-inline { background: var(--danger-color); color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: 800; font-size: 9px; margin-right: 4px; display: inline-block; }
     .inwork-badge-inline { background: var(--warning-color); color: #000; padding: 1px 5px; border-radius: 4px; font-weight: 800; font-size: 9px; margin-right: 4px; display: inline-block; }
     .overdue-badge-inline { background: #646464; color: #fff; padding: 1px 5px; border-radius: 4px; font-weight: 800; font-size: 9px; margin-right: 4px; display: inline-block; }
@@ -141,7 +141,7 @@
 <body>
 
   <div class="container">
-    
+
     <!-- ВЕРХНЯЯ ПАНЕЛЬ С КНОПКОЙ ВЫХОДА -->
     <div id="userHeaderBar" style="display:none; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--card-border); width: 100%; box-sizing: border-box;">
       <span id="userRoleBadge" style="font-size: 13px; font-weight: 600; color: var(--accent-color);"></span>
@@ -153,7 +153,7 @@
       <div class="auth-card">
         <h1 style="margin-bottom: 8px;">🔒 Вход</h1>
         <p style="color: var(--text-secondary); font-size: 13px; text-align: center; margin-bottom: 20px;">Авторизуйтесь для доступа к барам</p>
-        
+
         <div class="form-group" style="text-align: left;">
           <label>Логин</label>
           <input type="text" id="authLoginInput" placeholder="Введите логин" autocomplete="username">
@@ -204,7 +204,7 @@
 
       <form id="requestForm">
         <input type="hidden" id="barNameInput" name="barName">
-        
+
         <div class="form-group">
           <label>Тип заявки</label>
           <select id="requestType" name="requestType" required>
@@ -230,12 +230,12 @@
           <label>Что необходимо сделать</label>
           <textarea id="taskText" name="taskText" placeholder="Описание проблемы..." required></textarea>
         </div>
-        
+
         <div class="form-group">
           <label>Сроки и дата устранения</label>
           <input type="datetime-local" id="deadline" name="deadline" required>
         </div>
-        
+
         <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px;">
           <label style="margin: 0; font-weight: 600;">🟢 Текущая заявка (3 дня)</label>
           <label class="switch">
@@ -333,10 +333,41 @@
     <div id="statsScreen" class="stats-screen-card">
       <div class="history-header-fixed">
         <h2 id="statsTitle" style="margin: 0 0 5px 0; color: var(--warning-color);">📊 Аналитика и Статистика</h2>
-        <div class="filter-section" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 8px; padding: 5px;">
-          <div style="display: flex; gap: 4px; width: 100%;">
-            <div style="flex:1;"><label style="font-size: 8.5px;">Бар</label><select id="statsBarSelect" onchange="renderStatistics()" style="padding: 2px 4px; font-size: 12px; height: 28px;"><option value="ALL">Все бары</option></select></div>
-            <div style="flex:1;"><label style="font-size: 8.5px;">Инициатор</label><select id="statsInitiatorSelect" onchange="renderStatistics()" style="padding: 2px 4px; font-size: 12px; height: 28px;"><option value="ALL">Все</option><option value="ги то">ГИ ТО</option><option value="ги мм">ГИ ММ</option><option value="упр">Упр</option><option value="тд">ТД</option><option value="менеджер">Менеджер</option></select></div>
+        <div class="filter-section" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 8px; padding: 5px; margin-bottom: 5px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; gap: 4px; width: 100%;">
+              <div style="flex:1;"><label style="font-size: 8.5px;">Бар</label><select id="statsBarSelect" onchange="renderStatistics()" style="padding: 2px 4px; font-size: 12px; height: 28px;"><option value="ALL">Все бары</option></select></div>
+              <div style="flex:1;"><label style="font-size: 8.5px;">Инициатор</label><select id="statsInitiatorSelect" onchange="renderStatistics()" style="padding: 2px 4px; font-size: 12px; height: 28px;"><option value="ALL">Все</option><option value="ги то">ГИ ТО</option><option value="ги мм">ГИ ММ</option><option value="упр">Упр</option><option value="тд">ТД</option><option value="менеджер">Менеджер</option></select></div>
+            </div>
+            <div style="display: flex; gap: 4px; width: 100%;">
+              <div style="flex:1;">
+                <label style="font-size: 8.5px;">Тип заявки</label>
+                <select id="statsTypeSelect" onchange="renderStatistics()" style="padding: 2px 4px; font-size: 12px; height: 28px;">
+                  <option value="ALL">Все</option>
+                  <option value="общее">Общее</option>
+                  <option value="тех оборудование">Тех оборуд.</option>
+                  <option value="звук свет">Звук Свет</option>
+                </select>
+              </div>
+              <div style="flex:1;">
+                <label style="font-size: 8.5px;">Месяц</label>
+                <select id="statsMonthSelect" onchange="renderStatistics()" style="padding: 2px 4px; font-size: 12px; height: 28px;">
+                  <option value="ALL">За всё время</option>
+                  <option value="0">Январь</option>
+                  <option value="1">Февраль</option>
+                  <option value="2">Март</option>
+                  <option value="3">Апрель</option>
+                  <option value="4">Май</option>
+                  <option value="5">Июнь</option>
+                  <option value="6">Июль</option>
+                  <option value="7">Август</option>
+                  <option value="8">Сентябрь</option>
+                  <option value="9">Октябрь</option>
+                  <option value="10">Ноябрь</option>
+                  <option value="11">Декабрь</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -453,14 +484,14 @@
       }
     }
 
-    let currentRegion = "moscow"; 
-    let currentUserRole = ""; 
+    let currentRegion = "moscow";
+    let currentUserRole = "";
     let selectedFiles = [];
-    let allTasksCached = []; 
+    let allTasksCached = [];
     let loadedBarsList = [];
     let currentActiveBar = "";
     let isAllBarsMode = false;
-    let resultFilesCache = {}; 
+    let resultFilesCache = {};
     let currentOpenedImageUrl = "";
     let chartInstance = null;
 
@@ -491,7 +522,7 @@
           }
         } catch (e) {}
       }
-      
+
       document.getElementById('authScreen').style.display = 'flex';
     });
 
@@ -557,12 +588,12 @@
     function selectRegion(region) {
       currentRegion = region;
       const regionName = (region === 'moscow' || region === 'Москва') ? 'Москва' : 'Регионы';
-      
+
       document.getElementById('regionScreen').style.display = 'none';
       document.getElementById('mainScreen').style.display = 'block';
       document.getElementById('regionBadgeHeader').innerText = regionName;
       document.getElementById('mainScreenTitle').innerText = 'Выберите бар';
-      
+
       loadBarsData(region);
     }
 
@@ -578,7 +609,7 @@
       const urgentToggle = document.getElementById('urgentToggle');
       const currentTaskToggle = document.getElementById('currentTaskToggle');
       const deadlineInput = document.getElementById('deadline');
-      
+
       if (urgentToggle.checked) {
         if (currentTaskToggle) currentTaskToggle.checked = false;
         const now = new Date();
@@ -671,7 +702,7 @@
       document.getElementById('mainLoader').style.display = 'none';
       const container = document.getElementById('barsContainer');
       container.innerHTML = '';
-      
+
       let barsArray = (response && response.success && Array.isArray(response.bars)) ? response.bars : [];
       loadedBarsList = barsArray;
 
@@ -988,7 +1019,7 @@
       isAllBarsMode = false;
       document.getElementById('mainScreen').style.display = 'none';
       document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'flex'; 
+      document.getElementById('historyScreen').style.display = 'flex';
       const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
       document.getElementById('historyBarTitle').innerText = "Задачи: " + currentActiveBar + " (" + regionLabel + ")";
       fetchHistoryData(currentActiveBar);
@@ -998,7 +1029,7 @@
       isAllBarsMode = true;
       document.getElementById('mainScreen').style.display = 'none';
       document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'flex'; 
+      document.getElementById('historyScreen').style.display = 'flex';
       const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
       document.getElementById('historyBarTitle').innerText = "Все задачи (Тех. отдел - " + regionLabel + ")";
       fetchHistoryData("ALL");
@@ -1007,28 +1038,28 @@
     async function fetchHistoryData(barTarget) {
       document.getElementById('tasksListContainer').innerHTML = '';
       document.getElementById('historyLoader').style.display = 'block';
-      document.getElementById('filterDateFrom').value = ''; 
-      document.getElementById('filterDateTo').value = ''; 
+      document.getElementById('filterDateFrom').value = '';
+      document.getElementById('filterDateTo').value = '';
       document.getElementById('filterStatus').value = 'active';
-      document.getElementById('filterType').value = 'all'; 
+      document.getElementById('filterType').value = 'all';
       document.getElementById('filterInitiator').value = '';
-      resultFilesCache = {}; 
+      resultFilesCache = {};
 
       const res = await apiCall("getBarTasks", { barName: barTarget, region: currentRegion });
       document.getElementById('historyLoader').style.display = 'none';
 
       if (res && res.success) {
         allTasksCached = res.tasks;
-        applyFilters(); 
+        applyFilters();
       } else {
         document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px; color:var(--danger-color);">Ошибка: ' + (res.error || 'Сбой связи') + '</div>';
       }
     }
 
     function applyFilters() {
-      const selStatus = document.getElementById('filterStatus').value; 
-      const dateFromVal = document.getElementById('filterDateFrom').value; 
-      const dateToVal = document.getElementById('filterDateTo').value; 
+      const selStatus = document.getElementById('filterStatus').value;
+      const dateFromVal = document.getElementById('filterDateFrom').value;
+      const dateToVal = document.getElementById('filterDateTo').value;
       const selInit = document.getElementById('filterInitiator').value;
       const selType = document.getElementById('filterType').value;
 
@@ -1038,11 +1069,11 @@
       const filtered = allTasksCached.filter(task => {
         const hasResult = task.result && task.result.trim() !== "";
         const overdueNow = isTaskOverdue(task);
-        
+
         let mStatus = true;
-        if (selStatus === "active") mStatus = !hasResult;    
+        if (selStatus === "active") mStatus = !hasResult;
         if (selStatus === "inwork") mStatus = !hasResult && task.inWork;
-        if (selStatus === "completed") mStatus = hasResult;   
+        if (selStatus === "completed") mStatus = hasResult;
         if (selStatus === "overdue") mStatus = !hasResult && overdueNow;
         if (selStatus === "latedone") mStatus = hasResult && overdueNow;
 
@@ -1055,7 +1086,7 @@
           if (fromDate && tDate < fromDate) mPeriod = false;
           if (toDate && tDate > toDate) mPeriod = false;
         } else if (fromDate || toDate) { mPeriod = false; }
-        
+
         return mStatus && mInit && mType && mPeriod;
       });
 
@@ -1069,7 +1100,7 @@
           if (fromDate && tDate < fromDate) mPeriod = false;
           if (toDate && tDate > toDate) mPeriod = false;
         } else if (fromDate || toDate) { mPeriod = false; }
-        
+
         if (mInit && mType && mPeriod) {
           total++;
           const hasResult = task.result && task.result.trim() !== "";
@@ -1078,8 +1109,8 @@
             completed++;
             if (overdueNow) latedone++;
           } else {
-            active++; 
-            if (overdueNow) overdue++; 
+            active++;
+            if (overdueNow) overdue++;
           }
         }
       });
@@ -1151,16 +1182,16 @@
     }
 
     function createTaskElement(task, index) {
-      const item = document.createElement('div'); 
+      const item = document.createElement('div');
       const hasResult = task.result && task.result.trim() !== "";
       const overdueNow = isTaskOverdue(task);
       const safeId = (task.barName + '_' + task.rowIdx).replace(/[^a-zA-Z0-9_]/g, '_');
-      
+
       let classList = 'task-item';
       if (task.urgent) classList += ' urgent-task';
-      if (!hasResult && overdueNow) classList += ' overdue-task'; 
+      if (!hasResult && overdueNow) classList += ' overdue-task';
       item.className = classList;
-      
+
       let htmlPhotos = '';
       if(task.photos && task.photos.length > 0) {
         task.photos.forEach((url, pIdx) => {
@@ -1173,7 +1204,7 @@
         badgeHtml += `<span class="task-bar-badge" style="background:#ff9500; margin-right:4px;">${task.barName}</span>`;
       }
       if (task.urgent) badgeHtml += `<span class="urgent-badge-inline">Срочно</span>`;
-      
+
       if (hasResult) {
         if (overdueNow) badgeHtml += `<span class="late-badge-inline">⚠️ Выполнено с опозданием</span>`;
       } else {
@@ -1200,11 +1231,11 @@
         let resPhotoLink = '';
         if (task.resultPhoto && task.resultPhoto.trim() !== "") {
           const rPhotos = task.resultPhoto.split(",").map(u => u.trim()).filter(u => u !== "");
-          resPhotoLink = rPhotos.map((url, idx) => 
+          resPhotoLink = rPhotos.map((url, idx) =>
             `<div class="photo-link res-link" onclick="openImageInLightbox('${url}')">📸 Фото отчета ${rPhotos.length > 1 ? idx + 1 : ''}</div>`
           ).join('');
         }
-        
+
         const resultCardClass = overdueNow ? 'result-saved late-result' : 'result-saved';
         const overdueTextHeader = overdueNow ? '<b style="color:var(--late-done-color);">Результат (Сдано с опозданием):</b>' : '<b>Результат:</b>';
 
@@ -1506,7 +1537,7 @@
     async function openStatisticsScreen() {
       document.getElementById('mainScreen').style.display = 'none';
       document.getElementById('statsScreen').style.display = 'flex';
-      
+
       const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
       document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
       document.getElementById('statsLoader').style.display = 'block';
@@ -1533,11 +1564,24 @@
     function renderStatistics() {
       const barSel = document.getElementById('statsBarSelect').value;
       const initSel = document.getElementById('statsInitiatorSelect').value;
+      const typeSel = document.getElementById('statsTypeSelect') ? document.getElementById('statsTypeSelect').value : "ALL";
+      const monthSel = document.getElementById('statsMonthSelect') ? document.getElementById('statsMonthSelect').value : "ALL";
 
       const filtered = allTasksCached.filter(task => {
         const mBar = (barSel === "ALL") || (task.barName === barSel);
         const mInit = (initSel === "ALL") || (task.initiator && task.initiator.toLowerCase().trim() === initSel);
-        return mBar && mInit;
+        const mType = (typeSel === "ALL") || (task.type && task.type.toLowerCase().trim() === typeSel);
+
+        let mMonth = true;
+        if (monthSel !== "ALL") {
+          const tDate = parseTaskDate(task.date);
+          if (tDate) {
+            mMonth = (tDate.getMonth() === parseInt(monthSel, 10));
+          } else {
+            mMonth = false;
+          }
+        }
+        return mBar && mInit && mType && mMonth;
       });
 
       let total = 0, completed = 0, active = 0, overdue = 0, doneOnTime = 0, doneLate = 0, urgentCount = 0;
