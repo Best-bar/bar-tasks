@@ -1046,8 +1046,6 @@
     }
 
     async function fetchHistoryData(barTarget) {
-      document.getElementById('tasksListContainer').innerHTML = '';
-      document.getElementById('historyLoader').style.display = 'block';
       document.getElementById('filterDateFrom').value = '';
       document.getElementById('filterDateTo').value = '';
       document.getElementById('filterStatus').value = 'active';
@@ -1055,13 +1053,34 @@
       document.getElementById('filterInitiator').value = '';
       resultFilesCache = {};
 
+      const cacheKey = 'cached_tasks_' + currentRegion + '_' + barTarget;
+      const cachedData = localStorage.getItem(cacheKey);
+      let loadedFromCache = false;
+
+      if (cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData);
+          if (parsed && Array.isArray(parsed.tasks)) {
+            allTasksCached = parsed.tasks;
+            applyFilters();
+            loadedFromCache = true;
+          }
+        } catch (e) {}
+      }
+
+      if (!loadedFromCache) {
+        document.getElementById('tasksListContainer').innerHTML = '';
+        document.getElementById('historyLoader').style.display = 'block';
+      }
+
       const res = await apiCall("getBarTasks", { barName: barTarget, region: currentRegion });
       document.getElementById('historyLoader').style.display = 'none';
 
       if (res && res.success) {
+        localStorage.setItem(cacheKey, JSON.stringify({ tasks: res.tasks }));
         allTasksCached = res.tasks;
         applyFilters();
-      } else {
+      } else if (!loadedFromCache) {
         document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px; color:var(--danger-color);">Ошибка: ' + (res.error || 'Сбой связи') + '</div>';
       }
     }
@@ -1550,23 +1569,48 @@
 
       const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
       document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
-      document.getElementById('statsLoader').style.display = 'block';
-      document.getElementById('statsContent').style.display = 'none';
+
+      const cacheKey = 'cached_stats_' + currentRegion;
+      const cachedData = localStorage.getItem(cacheKey);
+      let loadedFromCache = false;
+
+      const populateStats = (data) => {
+        allTasksCached = data.tasks;
+        const select = document.getElementById('statsBarSelect');
+        const currentSelectedBar = select.value;
+        select.innerHTML = '<option value="ALL">Все бары</option>';
+        data.bars.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b; opt.innerText = b; select.appendChild(opt);
+        });
+        if (data.bars.includes(currentSelectedBar)) { select.value = currentSelectedBar; }
+        document.getElementById('statsContent').style.display = 'block';
+        renderStatistics();
+      };
+
+      if (cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData);
+          if (parsed && Array.isArray(parsed.tasks) && Array.isArray(parsed.bars)) {
+            document.getElementById('statsLoader').style.display = 'none';
+            populateStats(parsed);
+            loadedFromCache = true;
+          }
+        } catch (e) {}
+      }
+
+      if (!loadedFromCache) {
+        document.getElementById('statsLoader').style.display = 'block';
+        document.getElementById('statsContent').style.display = 'none';
+      }
 
       const res = await apiCall("getStatisticsData", { region: currentRegion });
       document.getElementById('statsLoader').style.display = 'none';
 
       if (res && res.success) {
-        allTasksCached = res.tasks;
-        const select = document.getElementById('statsBarSelect');
-        select.innerHTML = '<option value="ALL">Все бары</option>';
-        res.bars.forEach(b => {
-          const opt = document.createElement('option');
-          opt.value = b; opt.innerText = b; select.appendChild(opt);
-        });
-        document.getElementById('statsContent').style.display = 'block';
-        renderStatistics();
-      } else {
+        localStorage.setItem(cacheKey, JSON.stringify({ tasks: res.tasks, bars: res.bars }));
+        populateStats(res);
+      } else if (!loadedFromCache) {
         alert("Ошибка: " + (res.error || "Не удалось загрузить данные"));
       }
     }
