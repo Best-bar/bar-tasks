@@ -4,12 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Управление задачами баров</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Задачи">
-  <meta name="theme-color" content="#121212">
-  <link rel="icon" type="image/png" sizes="192x192" href="./02_tools_bar_round.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="./02_tools_bar_round.png">
+  <link rel="icon" type="image/png" href="./icon.png">
+  <link rel="apple-touch-icon" href="./icon.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <style>
     .btn-instruction {
@@ -1046,6 +1042,8 @@
     }
 
     async function fetchHistoryData(barTarget) {
+      document.getElementById('tasksListContainer').innerHTML = '';
+      document.getElementById('historyLoader').style.display = 'block';
       document.getElementById('filterDateFrom').value = '';
       document.getElementById('filterDateTo').value = '';
       document.getElementById('filterStatus').value = 'active';
@@ -1053,34 +1051,13 @@
       document.getElementById('filterInitiator').value = '';
       resultFilesCache = {};
 
-      const cacheKey = 'cached_tasks_' + currentRegion + '_' + barTarget;
-      const cachedData = localStorage.getItem(cacheKey);
-      let loadedFromCache = false;
-
-      if (cachedData) {
-        try {
-          const parsed = JSON.parse(cachedData);
-          if (parsed && Array.isArray(parsed.tasks)) {
-            allTasksCached = parsed.tasks;
-            applyFilters();
-            loadedFromCache = true;
-          }
-        } catch (e) {}
-      }
-
-      if (!loadedFromCache) {
-        document.getElementById('tasksListContainer').innerHTML = '';
-        document.getElementById('historyLoader').style.display = 'block';
-      }
-
       const res = await apiCall("getBarTasks", { barName: barTarget, region: currentRegion });
       document.getElementById('historyLoader').style.display = 'none';
 
       if (res && res.success) {
-        localStorage.setItem(cacheKey, JSON.stringify({ tasks: res.tasks }));
         allTasksCached = res.tasks;
         applyFilters();
-      } else if (!loadedFromCache) {
+      } else {
         document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px; color:var(--danger-color);">Ошибка: ' + (res.error || 'Сбой связи') + '</div>';
       }
     }
@@ -1275,6 +1252,18 @@
               <div class="task-photos-row" style="margin-top:4px;">${resPhotoLink}</div>
             </div>
           </div>`;
+      } else if (currentUserRole !== 'admin' && currentUserRole !== 'executor') {
+        if (!task.inWork) {
+          resultHtml = `
+            <div class="result-container" style="text-align:center; padding:10px; color:var(--text-secondary); font-size:12px;">
+              Ожидает исполнителя
+            </div>`;
+        } else {
+          resultHtml = `
+            <div class="result-container" style="text-align:center; padding:10px; color:var(--warning-color); font-size:12px;">
+              🟡 В работе
+            </div>`;
+        }
       } else if (!task.inWork) {
         resultHtml = `
           <div class="result-container" id="inWorkBox_${safeId}">
@@ -1569,48 +1558,23 @@
 
       const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
       document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
-
-      const cacheKey = 'cached_stats_' + currentRegion;
-      const cachedData = localStorage.getItem(cacheKey);
-      let loadedFromCache = false;
-
-      const populateStats = (data) => {
-        allTasksCached = data.tasks;
-        const select = document.getElementById('statsBarSelect');
-        const currentSelectedBar = select.value;
-        select.innerHTML = '<option value="ALL">Все бары</option>';
-        data.bars.forEach(b => {
-          const opt = document.createElement('option');
-          opt.value = b; opt.innerText = b; select.appendChild(opt);
-        });
-        if (data.bars.includes(currentSelectedBar)) { select.value = currentSelectedBar; }
-        document.getElementById('statsContent').style.display = 'block';
-        renderStatistics();
-      };
-
-      if (cachedData) {
-        try {
-          const parsed = JSON.parse(cachedData);
-          if (parsed && Array.isArray(parsed.tasks) && Array.isArray(parsed.bars)) {
-            document.getElementById('statsLoader').style.display = 'none';
-            populateStats(parsed);
-            loadedFromCache = true;
-          }
-        } catch (e) {}
-      }
-
-      if (!loadedFromCache) {
-        document.getElementById('statsLoader').style.display = 'block';
-        document.getElementById('statsContent').style.display = 'none';
-      }
+      document.getElementById('statsLoader').style.display = 'block';
+      document.getElementById('statsContent').style.display = 'none';
 
       const res = await apiCall("getStatisticsData", { region: currentRegion });
       document.getElementById('statsLoader').style.display = 'none';
 
       if (res && res.success) {
-        localStorage.setItem(cacheKey, JSON.stringify({ tasks: res.tasks, bars: res.bars }));
-        populateStats(res);
-      } else if (!loadedFromCache) {
+        allTasksCached = res.tasks;
+        const select = document.getElementById('statsBarSelect');
+        select.innerHTML = '<option value="ALL">Все бары</option>';
+        res.bars.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b; opt.innerText = b; select.appendChild(opt);
+        });
+        document.getElementById('statsContent').style.display = 'block';
+        renderStatistics();
+      } else {
         alert("Ошибка: " + (res.error || "Не удалось загрузить данные"));
       }
     }
