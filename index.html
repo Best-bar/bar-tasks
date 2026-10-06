@@ -158,14 +158,13 @@
 
         <div class="form-group" style="text-align: left;">
           <label>Логин</label>
-          <select id="authLoginInput">
+          <select id="authLoginInput" onchange="handleLoginTypeChange()">
             <option value="admin">Администратор (admin)</option>
-            <option value="user">Инициатор (user)</option>
-            <option value="exec">Исполнитель (exec)</option>
+            <option value="user">Инициатор (без пароля)</option>
           </select>
         </div>
 
-        <div class="form-group" style="text-align: left;">
+        <div class="form-group" id="passwordContainer" style="text-align: left;">
           <label>Пароль</label>
           <input type="password" id="authPasswordInput" placeholder="Введите пароль" autocomplete="current-password">
         </div>
@@ -532,14 +531,25 @@
       document.getElementById('authScreen').style.display = 'flex';
     });
 
+    function handleLoginTypeChange() {
+      const loginType = document.getElementById('authLoginInput').value;
+      const pwdContainer = document.getElementById('passwordContainer');
+      if (loginType === 'user') {
+        pwdContainer.style.display = 'none';
+        document.getElementById('authPasswordInput').value = '';
+      } else {
+        pwdContainer.style.display = 'block';
+      }
+    }
+
     async function performLogin() {
       const login = document.getElementById('authLoginInput').value.trim();
       const pass = document.getElementById('authPasswordInput').value.trim();
       const errDiv = document.getElementById('authErrorMsg');
       const btn = document.getElementById('btnLoginSubmit');
 
-      if (!login || !pass) {
-        errDiv.innerText = "Введите логин и пароль";
+      if (!login || (login === 'admin' && !pass)) {
+        errDiv.innerText = login === 'admin' ? "Введите логин и пароль" : "Выберите пользователя";
         errDiv.style.display = 'block';
         return;
       }
@@ -1296,6 +1306,7 @@
             <button type="button" class="photo-link" style="color: #ffd60a; border-color: rgba(255, 188, 0, 0.4);" onclick="openAdminEditModal('${task.barName}', ${task.rowIdx})">✏️ Изменить</button>
             <button type="button" class="photo-link" style="color: #ff453a; border-color: rgba(255, 69, 58, 0.4);" onclick="deleteTaskByAdminAction('${task.barName}', ${task.rowIdx})">🗑️ Удалить</button>
             ${!hasResult ? `<button type="button" class="photo-link" style="color: #30d158; border-color: rgba(48, 209, 88, 0.4);" onclick="closeTaskByAdminAction('${task.barName}', ${task.rowIdx})">⚡ Закрыть без фото</button>` : ''}
+            ${hasResult ? `<button type="button" class="photo-link" style="color: #0a84ff; border-color: rgba(10, 132, 255, 0.4);" onclick="returnTaskToWorkAdmin('${task.barName}', ${task.rowIdx})">↩️ Возврат в работу</button>` : ''}
           </div>
         `;
       }
@@ -1521,6 +1532,23 @@
         applyFilters();
       } else {
         alert("Ошибка закрытия: " + (res.error || "Сбой"));
+      }
+    }
+
+    async function returnTaskToWorkAdmin(barName, rowIdx) {
+      if (!confirm("Вы уверены, что хотите вернуть задачу в работу? (Результат выполнения будет удален)")) return;
+
+      const res = await apiCall("adminReturnTask", { barName: barName, rowIdx: rowIdx, region: currentRegion });
+      if (res && res.success) {
+        const t = allTasksCached.find(item => item.barName === barName && item.rowIdx === rowIdx);
+        if (t) {
+          t.result = "";
+          t.doneDate = "";
+          t.resultPhoto = "";
+        }
+        applyFilters();
+      } else {
+        alert("Ошибка возврата в работу: " + (res.error || "Сбой"));
       }
     }
 
