@@ -286,75 +286,83 @@
   </div>
 
   <script>
-    // ==========================================================
-    // 1. ВСТАВЬТЕ СЮДА КЛЮЧИ ИЗ ВАШЕЙ FIREBASE CONSOLE
-    // ==========================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyBCQ4lrOvOIYcTnuxBCL53Cta4X0sQgLbU",
-      authDomain: "bestbar-tasks.firebaseapp.com",
-      projectId: "bestbar-tasks",
-      storageBucket: "bestbar-tasks.firebasestorage.app",
-      messagingSenderId: "973216655632",
-      appId: "1:973216655632:web:c8c08e27cc5cb002f79d95"
-    };
-    
-    // Инициализация Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+	  // ==========================================================
+	  // 1. ВСТАВЬТЕ СЮДА КЛЮЧИ ИЗ ВАШЕЙ FIREBASE CONSOLE
+	  // ==========================================================
+	  const firebaseConfig = {
+	  apiKey: "AIzaSyBCQ4lrOvOIYcTnuxBCL53Cta4X0sQgLbU",
+	  authDomain: "bestbar-tasks.firebaseapp.com",
+	  projectId: "bestbar-tasks",
+	  storageBucket: "bestbar-tasks.firebasestorage.app",
+	  messagingSenderId: "973216655632",
+	  appId: "1:973216655632:web:c8c08e27cc5cb002f79d95"
+	  };
 
-    // ==========================================================
-    // 2. ВПИШИТЕ ВАШИ БАРЫ
-    // ==========================================================
-    const BARS_MOSCOW = [
-      "Бар 1", 
-      "Бар 2", 
-      "Руки Вверх Таганка"
-    ];
-    
-    const BARS_REGIONS = [
-      "Бар Питер", 
-      "РВБ Митино"
-    ];
+	  // Инициализация Firebase
+	  firebase.initializeApp(firebaseConfig);
+	  const db = firebase.firestore();
+	  const storage = firebase.storage();
 
-    // ==========================================================
-    // НАСТРОЙКИ TELEGRAM БОТА (Внутренние уведомления)
-    // ==========================================================
-    const TELEGRAM_BOT_TOKEN = "8955523812:AAH8wj50sEJIihNmm8p5Sw1GxcXMQlXpiyo";
-    const TECH_CHAT_ID = "1451763750";
-    const BAR_CHATS = {
-      "Бар 1": "111222333",
-      "Бар 2": "444555666",
-      "default": "5460766895"
-    };
+	  // ==========================================================
+	  // 2. ВПИШИТЕ ВАШИ БАРЫ
+	  // ==========================================================
+	  const BARS_MOSCOW = [
+	  "Санта Муэрте",
+	  "Орбита/шум",
+	  "Евгенич МСК",
+	  "РВБ Таганка"
+	  "РВБ Тверская"
+	  "РВБ Авто"
+	  "РВБ Олимп"
+	  "РВБ Одинц"
+	  "РВБ Зелен"
+	  "РВБ Можайка"
+	  "РВБ Стогино"
+	  ];
 
-    let currentRegion = "moscow"; 
-    let currentUserRole = ""; 
-    let currentUserName = "";
-    let selectedFiles = [];
-    let allTasksCached = []; 
-    let currentActiveBar = "";
-    let isAllBarsMode = false;
-    let resultFilesCache = {}; 
-    let currentOpenedImageUrl = "";
-    let chartInstance = null;
+	  const BARS_REGIONS = [
+	  "НБ Литейный",
+	  "Евгенич Невский"
+	  ];
 
-    let currentFilteredTasks = [];
-    let displayedTasksCount = 20;
-    const TASKS_PAGE_SIZE = 20;
+	  // ==========================================================
+	  // НАСТРОЙКИ TELEGRAM БОТА (Внутренние уведомления)
+	  // ==========================================================
+	  const TELEGRAM_BOT_TOKEN = "8955523812:AAH8wj50sEJIihNmm8p5Sw1GxcXMQlXpiyo";
+	  const TECH_CHAT_ID = "1451763750";
+	  const BAR_CHATS = {
+	  "Бар 1": "111222333",
+	  "Бар 2": "444555666",
+	  "default": "5460766895"
+	  };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.container > div').forEach(el => el.style.display = 'none');
-      document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-      document.getElementById('requestForm').addEventListener('submit', sendData);
+	  let currentRegion = "moscow";
+	  let currentUserRole = "";
+	  let currentUserName = "";
+	  let selectedFiles = [];
+	  let allTasksCached = [];
+	  let currentActiveBar = "";
+	  let isAllBarsMode = false;
+	  let resultFilesCache = {};
+	  let currentOpenedImageUrl = "";
+	  let chartInstance = null;
 
-      initLazyScrollListener();
+	  let currentFilteredTasks = [];
+	  let displayedTasksCount = 20;
+	  const TASKS_PAGE_SIZE = 20;
 
-      const savedSession = localStorage.getItem('taskApp_session');
-      if (savedSession) {
-        try {
-          const user = JSON.parse(savedSession);
-          if (user && user.role) {
+	  window.addEventListener('DOMContentLoaded', () => {
+	  document.querySelectorAll('.container > div').forEach(el => el.style.display = 'none');
+	  document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+	  document.getElementById('requestForm').addEventListener('submit', sendData);
+
+	  initLazyScrollListener();
+
+	  const savedSession = localStorage.getItem('taskApp_session');
+	  if (savedSession) {
+	  try {
+	  const user = JSON.parse(savedSession);
+	  if (user && user.role) {
             finishLogin(user);
             return;
           }
