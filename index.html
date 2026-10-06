@@ -467,57 +467,57 @@
   </div>
 
   <script>
-    // ==========================================================
-    // ВСТАВЬТЕ СЮДА ВАШ URL ВЕБ-ПРИЛОЖЕНИЯ ИЗ GOOGLE APPS SCRIPT
-    // ==========================================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbzx_ui6G1386QblcVmnjT-TKtiGtt4rjv-IWOOEtrd4F5AhJV4l4cp1rbsSZUIHTozI/exec";
+	  // ==========================================================
+	  // ВСТАВЬТЕ СЮДА ВАШ URL ВЕБ-ПРИЛОЖЕНИЯ ИЗ GOOGLE APPS SCRIPT
+	  // ==========================================================
+	  const API_URL = "https://script.google.com/macros/s/AKfycbyjBQmap_aJQx_D-2VJ2uRlpU4LOe4vUGp93SDvS37slsUPkTS9YlLnro7p2DPGkErb/exec";
 
-    // Сетевой мост к Google Apps Script
-    async function apiCall(action, payload = {}) {
-      try {
-        const bodyData = JSON.stringify({ action: action, ...payload });
-        // Используем text/plain, чтобы исключить лишние preflight OPTIONS запросы
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: bodyData
-        });
-        return await response.json();
-      } catch (err) {
-        console.error("API error:", err);
-        return { success: false, error: err.message };
-      }
-    }
+	  // Сетевой мост к Google Apps Script
+	  async function apiCall(action, payload = {}) {
+	  try {
+	  const bodyData = JSON.stringify({ action: action, ...payload });
+	  // Используем text/plain, чтобы исключить лишние preflight OPTIONS запросы
+	  const response = await fetch(API_URL, {
+	  method: "POST",
+	  headers: { "Content-Type": "text/plain;charset=utf-8" },
+	  body: bodyData
+	  });
+	  return await response.json();
+	  } catch (err) {
+	  console.error("API error:", err);
+	  return { success: false, error: err.message };
+	  }
+	  }
 
-    let currentRegion = "moscow";
-    let currentUserRole = "";
-    let selectedFiles = [];
-    let allTasksCached = [];
-    let loadedBarsList = [];
-    let currentActiveBar = "";
-    let isAllBarsMode = false;
-    let resultFilesCache = {};
-    let currentOpenedImageUrl = "";
-    let chartInstance = null;
+	  let currentRegion = "moscow";
+	  let currentUserRole = "";
+	  let selectedFiles = [];
+	  let allTasksCached = [];
+	  let loadedBarsList = [];
+	  let currentActiveBar = "";
+	  let isAllBarsMode = false;
+	  let resultFilesCache = {};
+	  let currentOpenedImageUrl = "";
+	  let chartInstance = null;
 
-    // Пагинация
-    let currentFilteredTasks = [];
-    let displayedTasksCount = 20;
-    const TASKS_PAGE_SIZE = 20;
+	  // Пагинация
+	  let currentFilteredTasks = [];
+	  let displayedTasksCount = 20;
+	  const TASKS_PAGE_SIZE = 20;
 
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.container > div').forEach(el => el.style.display = 'none');
-      document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-      document.getElementById('requestForm').addEventListener('submit', sendData);
+	  window.addEventListener('DOMContentLoaded', () => {
+	  document.querySelectorAll('.container > div').forEach(el => el.style.display = 'none');
+	  document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+	  document.getElementById('requestForm').addEventListener('submit', sendData);
 
-      initLazyScrollListener();
+	  initLazyScrollListener();
 
-      // Проверка сессии из localStorage
-      const savedSession = localStorage.getItem('taskApp_session');
-      if (savedSession) {
-        try {
-          const user = JSON.parse(savedSession);
-          if (user && user.role) {
+	  // Проверка сессии из localStorage
+	  const savedSession = localStorage.getItem('taskApp_session');
+	  if (savedSession) {
+	  try {
+	  const user = JSON.parse(savedSession);
+	  if (user && user.role) {
             currentUserRole = user.role;
             document.getElementById('userRoleBadge').innerText = '👤 ' + (user.name || user.login);
             document.getElementById('userHeaderBar').style.display = 'flex';
