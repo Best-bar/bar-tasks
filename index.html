@@ -126,6 +126,21 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       transition: all 0.2s ease;
     }
+    .region-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-color);
+      padding: 22px;
+      border-radius: 16px;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.15s ease;
+    }
     .region-btn:active {
       background: var(--accent-color);
       border-color: var(--accent-color);
@@ -962,30 +977,19 @@
     }
 
     function transitionScreen(hideIds, showId, displayType = 'block') {
-      const screensToHide = hideIds.map(id => document.getElementById(id)).filter(el => el && el.style.display !== 'none');
-
-      if (screensToHide.length > 0) {
-        screensToHide.forEach(el => el.style.opacity = '0');
-        setTimeout(() => {
-          screensToHide.forEach(el => el.style.display = 'none');
-          const target = document.getElementById(showId);
-          if (target) {
-            target.style.display = displayType;
-            target.style.opacity = '0';
-            setTimeout(() => {
-              target.style.opacity = '1';
-            }, 10);
-          }
-        }, 150);
-      } else {
-        const target = document.getElementById(showId);
-        if (target) {
-          target.style.display = displayType;
-          target.style.opacity = '0';
-          setTimeout(() => {
-            target.style.opacity = '1';
-          }, 10);
+      hideIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.display = 'none';
         }
+      });
+      const target = document.getElementById(showId);
+      if (target) {
+        target.style.display = displayType;
+        target.style.opacity = '0';
+        setTimeout(() => {
+          target.style.opacity = '1';
+        }, 10);
       }
     }
 
@@ -1049,19 +1053,15 @@
       currentRegion = region;
       const regionName = (region === 'moscow' || region === 'Москва') ? 'Москва' : 'Регионы';
 
-      setTimeout(() => {
-        document.getElementById('regionBadgeHeader').innerText = regionName;
-        document.getElementById('mainScreenTitle').innerText = 'Выберите бар';
-        transitionScreen(['regionScreen'], 'mainScreen');
-        loadBarsData(region);
-      }, 50);
+      document.getElementById('regionBadgeHeader').innerText = regionName;
+      document.getElementById('mainScreenTitle').innerText = 'Выберите бар';
+      transitionScreen(['regionScreen'], 'mainScreen');
+      loadBarsData(region);
     }
 
     function goBackToRegionSelect() {
       triggerHaptic();
-      setTimeout(() => {
-        transitionScreen(['mainScreen', 'formScreen', 'historyScreen', 'statsScreen'], 'regionScreen');
-      }, 50);
+      transitionScreen(['mainScreen', 'formScreen', 'historyScreen', 'statsScreen'], 'regionScreen');
     }
 
     function handleUrgentToggle() {
@@ -1094,11 +1094,9 @@
     function proceedToForm() {
       triggerHaptic();
       closeBarActionModal();
-      setTimeout(() => {
-        document.getElementById('selectedBarTitle').innerText = currentActiveBar + ": Новая заявка";
-        document.getElementById('barNameInput').value = currentActiveBar;
-        transitionScreen(['mainScreen'], 'formScreen');
-      }, 50);
+      document.getElementById('selectedBarTitle').innerText = currentActiveBar + ": Новая заявка";
+      document.getElementById('barNameInput').value = currentActiveBar;
+      transitionScreen(['mainScreen'], 'formScreen');
     }
 
     function handleCurrentTaskToggle(checkbox) {
@@ -1424,7 +1422,6 @@
     }
 
     function openForm(barName) {
-      triggerHaptic();
       currentActiveBar = barName;
       document.getElementById('modalBarTitle').innerText = barName;
       document.getElementById('barActionModal').style.display = 'flex';
@@ -1432,14 +1429,12 @@
 
     function goBackToMain() {
       triggerHaptic();
-      setTimeout(() => {
-        transitionScreen(['formScreen', 'historyScreen', 'statsScreen'], 'mainScreen');
-        document.getElementById('requestForm').reset();
-        document.getElementById('urgentToggle').checked = false;
-        document.getElementById('currentTaskToggle').checked = false;
-        selectedFiles = [];
-        document.getElementById('fileList').innerText = "Файлы не выбраны";
-      }, 50);
+      document.getElementById('requestForm').reset();
+      document.getElementById('urgentToggle').checked = false;
+      document.getElementById('currentTaskToggle').checked = false;
+      selectedFiles = [];
+      document.getElementById('fileList').innerText = "Файлы не выбраны";
+      transitionScreen(['formScreen', 'historyScreen', 'statsScreen'], 'mainScreen');
     }
 
     function goBackFromHistory() {
@@ -1448,9 +1443,7 @@
 
     function goBackToMainFromStats() {
       triggerHaptic();
-      setTimeout(() => {
-        transitionScreen(['statsScreen'], 'mainScreen');
-      }, 50);
+      transitionScreen(['statsScreen'], 'mainScreen');
     }
 
     function formatToRussianDateTime(val) {
@@ -1550,23 +1543,19 @@
     function openHistoryForCurrentBar() {
       triggerHaptic();
       isAllBarsMode = false;
-      setTimeout(() => {
-        const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
-        document.getElementById('historyBarTitle').innerText = "Задачи: " + currentActiveBar + " (" + regionLabel + ")";
-        transitionScreen(['mainScreen', 'formScreen'], 'historyScreen', 'flex');
-        fetchHistoryData(currentActiveBar);
-      }, 50);
+      const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
+      document.getElementById('historyBarTitle').innerText = "Задачи: " + currentActiveBar + " (" + regionLabel + ")";
+      transitionScreen(['mainScreen', 'formScreen'], 'historyScreen', 'flex');
+      fetchHistoryData(currentActiveBar);
     }
 
     function openHistoryForAllBars() {
       triggerHaptic();
       isAllBarsMode = true;
-      setTimeout(() => {
-        const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
-        document.getElementById('historyBarTitle').innerText = "Все задачи (Тех. отдел - " + regionLabel + ")";
-        transitionScreen(['mainScreen', 'formScreen'], 'historyScreen', 'flex');
-        fetchHistoryData("ALL");
-      }, 50);
+      const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
+      document.getElementById('historyBarTitle').innerText = "Все задачи (Тех. отдел - " + regionLabel + ")";
+      transitionScreen(['mainScreen', 'formScreen'], 'historyScreen', 'flex');
+      fetchHistoryData("ALL");
     }
 
     function fetchHistoryData(barTarget) {
@@ -1606,9 +1595,9 @@
         .withSuccessHandler(function(response) {
           document.getElementById('historyLoader').style.display = 'none';
           if(response && response.success) {
-            allTasksCached = response.tasks;
+            allTasksCached = response.tasks || [];
             try {
-              localStorage.setItem(cacheKey, JSON.stringify(response.tasks));
+              localStorage.setItem(cacheKey, JSON.stringify(response.tasks || []));
             } catch(e) {}
             applyFilters();
           } else if (!renderedFromCache) {
@@ -2267,34 +2256,33 @@
        ========================================================== */
     function openStatisticsScreen() {
       triggerHaptic();
-      setTimeout(() => {
-        transitionScreen(['mainScreen', 'formScreen', 'historyScreen'], 'statsScreen', 'flex');
-        const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
-        document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
+      const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
+      document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
 
-        document.getElementById('statsLoader').style.display = 'block';
-        document.getElementById('statsContent').style.display = 'none';
+      document.getElementById('statsLoader').style.display = 'block';
+      document.getElementById('statsContent').style.display = 'none';
 
-        google.script.run
+      transitionScreen(['mainScreen', 'formScreen', 'historyScreen'], 'statsScreen', 'flex');
+
+      google.script.run
         .withSuccessHandler(function(res) {
           document.getElementById('statsLoader').style.display = 'none';
-            if (res && res.success) {
-              allTasksCached = res.tasks;
-              populateStatsBarSelect(res.bars);
-              populateStatsMonthSelect(res.tasks);
-              populateStatsTypeSelect(res.tasks);
-              document.getElementById('statsContent').style.display = 'block';
-              renderStatistics();
-            } else {
-              alert('Ошибка загрузки статистики: ' + (res ? res.error : 'Неизвестная ошибка'));
-            }
-          })
-          .withFailureHandler(function(err) {
-            document.getElementById('statsLoader').style.display = 'none';
-            alert('Сбой связи при загрузке статистики: ' + err.toString());
-          })
-          .getStatisticsData(currentRegion, currentAuthToken);
-      }, 50);
+          if (res && res.success) {
+            allTasksCached = res.tasks;
+            populateStatsBarSelect(res.bars);
+            populateStatsMonthSelect(res.tasks);
+            populateStatsTypeSelect(res.tasks);
+            document.getElementById('statsContent').style.display = 'block';
+            renderStatistics();
+          } else {
+            alert('Ошибка загрузки статистики: ' + (res ? res.error : 'Неизвестная ошибка'));
+          }
+        })
+        .withFailureHandler(function(err) {
+          document.getElementById('statsLoader').style.display = 'none';
+          alert('Сбой связи при загрузке статистики: ' + err.toString());
+        })
+        .getStatisticsData(currentRegion, currentAuthToken);
     }
 
     function populateStatsBarSelect(bars) {
