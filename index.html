@@ -97,9 +97,9 @@
       flex-direction: column;
     }
 
-    #regionScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; }
-    #mainScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; }
-    #formScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; }
+    #regionScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; transition: opacity 0.15s ease-out; opacity: 1; }
+    #mainScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; transition: opacity 0.15s ease-out; opacity: 1; }
+    #formScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; transition: opacity 0.15s ease-out; opacity: 1; }
 
     h1, h2 { text-align: center; font-weight: 600; letter-spacing: -0.5px; margin-top: 5px; }
     h1 { margin-bottom: 20px; font-size: 24px; }
@@ -129,7 +129,7 @@
     .region-btn:active {
       background: var(--accent-color);
       border-color: var(--accent-color);
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
     .bars-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -137,14 +137,17 @@
       background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);
       padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 500; cursor: pointer;
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); text-align: center;
+      transition: all 0.15s ease;
     }
-    .bar-btn:active { background: var(--accent-color); border-color: var(--accent-color); }
+    .bar-btn:active { background: var(--accent-color); border-color: var(--accent-color); transform: scale(0.97); }
 
     .btn-history-inside {
       width: 100%; background: rgba(10, 132, 255, 0.12); border: 1px solid var(--accent-color);
       color: var(--accent-color); padding: 12px; border-radius: 10px; font-size: 14px;
       font-weight: 600; cursor: pointer; margin-bottom: 18px;
+      transition: all 0.15s ease;
     }
+    .btn-history-inside:active { transform: scale(0.97); }
 
     .btn-all-tasks {
       width: 100%;
@@ -161,9 +164,11 @@
       text-align: center;
       box-sizing: border-box;
       box-shadow: 0 4px 12px rgba(10, 132, 255, 0.2);
+      transition: all 0.15s ease;
     }
     .btn-all-tasks:active {
       background: var(--accent-color);
+      transform: scale(0.97);
     }
 
     .btn-stats {
@@ -180,9 +185,11 @@
       text-align: center;
       box-sizing: border-box;
       box-shadow: 0 4px 12px rgba(255, 188, 0, 0.15);
+      transition: all 0.15s ease;
     }
     .btn-stats:active {
       background: rgba(255, 188, 0, 0.3);
+      transform: scale(0.97);
     }
 
     .btn-in-work {
@@ -212,7 +219,7 @@
 
     .history-card {
       display: none; height: 100vh; flex-direction: column; box-sizing: border-box; background: rgba(25,25,25,0.95);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); transition: opacity 0.15s ease-out; opacity: 1;
     }
 
     .history-header-fixed {
@@ -257,8 +264,10 @@
     input[type="file"] { display: none; }
     .file-list { margin-top: 6px; font-size: 13px; color: var(--text-secondary); }
 
-    .btn-submit { background: var(--accent-color); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
-    .btn-back { background: transparent; color: var(--danger-color); border: 1px solid rgba(255, 69, 58, 0.23); padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+    .btn-submit { background: var(--accent-color); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.15s ease; }
+    .btn-submit:active { transform: scale(0.97); }
+    .btn-back { background: transparent; color: var(--danger-color); border: 1px solid rgba(255, 69, 58, 0.23); padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.15s ease; }
+    .btn-back:active { transform: scale(0.97); }
 
     .filter-section { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 8px; padding: 5px; margin-bottom: 5px; }
     .filter-grid { display: flex; flex-direction: column; gap: 4px; }
@@ -283,7 +292,7 @@
 
     .stats-screen-card {
       display: none; height: 100vh; flex-direction: column; box-sizing: border-box; background: rgba(20,20,22,0.98);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); transition: opacity 0.15s ease-out; opacity: 1;
     }
     .stats-grid-summary {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;
@@ -946,6 +955,40 @@
         .checkAdminPassword(pwd);
     }
 
+    function triggerHaptic() {
+      if (navigator.vibrate) {
+        navigator.vibrate(15);
+      }
+    }
+
+    function transitionScreen(hideIds, showId, displayType = 'block') {
+      const screensToHide = hideIds.map(id => document.getElementById(id)).filter(el => el && el.style.display !== 'none');
+
+      if (screensToHide.length > 0) {
+        screensToHide.forEach(el => el.style.opacity = '0');
+        setTimeout(() => {
+          screensToHide.forEach(el => el.style.display = 'none');
+          const target = document.getElementById(showId);
+          if (target) {
+            target.style.display = displayType;
+            target.style.opacity = '0';
+            setTimeout(() => {
+              target.style.opacity = '1';
+            }, 10);
+          }
+        }, 150);
+      } else {
+        const target = document.getElementById(showId);
+        if (target) {
+          target.style.display = displayType;
+          target.style.opacity = '0';
+          setTimeout(() => {
+            target.style.opacity = '1';
+          }, 10);
+        }
+      }
+    }
+
     function updateUserUI() {
       const iconEl = document.getElementById('userAccountRoleIcon');
       const textEl = document.getElementById('userAccountText');
@@ -998,6 +1041,7 @@
     }
 
     function selectRegion(region) {
+      triggerHaptic();
       if (!currentAuthToken) {
         initializeAuth(function() { selectRegion(region); });
         return;
@@ -1005,20 +1049,19 @@
       currentRegion = region;
       const regionName = (region === 'moscow' || region === 'Москва') ? 'Москва' : 'Регионы';
 
-      document.getElementById('regionScreen').style.display = 'none';
-      document.getElementById('mainScreen').style.display = 'block';
-      document.getElementById('regionBadgeHeader').innerText = regionName;
-      document.getElementById('mainScreenTitle').innerText = 'Выберите бар';
-
-      loadBarsData(region);
+      setTimeout(() => {
+        document.getElementById('regionBadgeHeader').innerText = regionName;
+        document.getElementById('mainScreenTitle').innerText = 'Выберите бар';
+        transitionScreen(['regionScreen'], 'mainScreen');
+        loadBarsData(region);
+      }, 50);
     }
 
     function goBackToRegionSelect() {
-      document.getElementById('mainScreen').style.display = 'none';
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'none';
-      document.getElementById('statsScreen').style.display = 'none';
-      document.getElementById('regionScreen').style.display = 'block';
+      triggerHaptic();
+      setTimeout(() => {
+        transitionScreen(['mainScreen', 'formScreen', 'historyScreen', 'statsScreen'], 'regionScreen');
+      }, 50);
     }
 
     function handleUrgentToggle() {
@@ -1049,11 +1092,13 @@
     }
 
     function proceedToForm() {
+      triggerHaptic();
       closeBarActionModal();
-      document.getElementById('mainScreen').style.display = 'none';
-      document.getElementById('formScreen').style.display = 'block';
-      document.getElementById('selectedBarTitle').innerText = currentActiveBar + ": Новая заявка";
-      document.getElementById('barNameInput').value = currentActiveBar;
+      setTimeout(() => {
+        document.getElementById('selectedBarTitle').innerText = currentActiveBar + ": Новая заявка";
+        document.getElementById('barNameInput').value = currentActiveBar;
+        transitionScreen(['mainScreen'], 'formScreen');
+      }, 50);
     }
 
     function handleCurrentTaskToggle(checkbox) {
@@ -1379,21 +1424,22 @@
     }
 
     function openForm(barName) {
+      triggerHaptic();
       currentActiveBar = barName;
       document.getElementById('modalBarTitle').innerText = barName;
       document.getElementById('barActionModal').style.display = 'flex';
     }
 
     function goBackToMain() {
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'none';
-      document.getElementById('statsScreen').style.display = 'none';
-      document.getElementById('mainScreen').style.display = 'block';
-      document.getElementById('requestForm').reset();
-      document.getElementById('urgentToggle').checked = false;
-      document.getElementById('currentTaskToggle').checked = false;
-      selectedFiles = [];
-      document.getElementById('fileList').innerText = "Файлы не выбраны";
+      triggerHaptic();
+      setTimeout(() => {
+        transitionScreen(['formScreen', 'historyScreen', 'statsScreen'], 'mainScreen');
+        document.getElementById('requestForm').reset();
+        document.getElementById('urgentToggle').checked = false;
+        document.getElementById('currentTaskToggle').checked = false;
+        selectedFiles = [];
+        document.getElementById('fileList').innerText = "Файлы не выбраны";
+      }, 50);
     }
 
     function goBackFromHistory() {
@@ -1401,8 +1447,10 @@
     }
 
     function goBackToMainFromStats() {
-      document.getElementById('statsScreen').style.display = 'none';
-      document.getElementById('mainScreen').style.display = 'block';
+      triggerHaptic();
+      setTimeout(() => {
+        transitionScreen(['statsScreen'], 'mainScreen');
+      }, 50);
     }
 
     function formatToRussianDateTime(val) {
@@ -1500,23 +1548,25 @@
     }
 
     function openHistoryForCurrentBar() {
+      triggerHaptic();
       isAllBarsMode = false;
-      document.getElementById('mainScreen').style.display = 'none';
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'flex';
-      const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
-      document.getElementById('historyBarTitle').innerText = "Задачи: " + currentActiveBar + " (" + regionLabel + ")";
-      fetchHistoryData(currentActiveBar);
+      setTimeout(() => {
+        const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
+        document.getElementById('historyBarTitle').innerText = "Задачи: " + currentActiveBar + " (" + regionLabel + ")";
+        transitionScreen(['mainScreen', 'formScreen'], 'historyScreen', 'flex');
+        fetchHistoryData(currentActiveBar);
+      }, 50);
     }
 
     function openHistoryForAllBars() {
+      triggerHaptic();
       isAllBarsMode = true;
-      document.getElementById('mainScreen').style.display = 'none';
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'flex';
-      const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
-      document.getElementById('historyBarTitle').innerText = "Все задачи (Тех. отдел - " + regionLabel + ")";
-      fetchHistoryData("ALL");
+      setTimeout(() => {
+        const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
+        document.getElementById('historyBarTitle').innerText = "Все задачи (Тех. отдел - " + regionLabel + ")";
+        transitionScreen(['mainScreen', 'formScreen'], 'historyScreen', 'flex');
+        fetchHistoryData("ALL");
+      }, 50);
     }
 
     function fetchHistoryData(barTarget) {
@@ -2216,36 +2266,35 @@
        ЛОГИКА РАБОТЫ ЭКРАНА СТАТИСТИКИ
        ========================================================== */
     function openStatisticsScreen() {
-      document.getElementById('mainScreen').style.display = 'none';
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('historyScreen').style.display = 'none';
-      document.getElementById('statsScreen').style.display = 'flex';
+      triggerHaptic();
+      setTimeout(() => {
+        transitionScreen(['mainScreen', 'formScreen', 'historyScreen'], 'statsScreen', 'flex');
+        const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
+        document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
 
-      const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
-      document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
+        document.getElementById('statsLoader').style.display = 'block';
+        document.getElementById('statsContent').style.display = 'none';
 
-      document.getElementById('statsLoader').style.display = 'block';
-      document.getElementById('statsContent').style.display = 'none';
-
-      google.script.run
+        google.script.run
         .withSuccessHandler(function(res) {
           document.getElementById('statsLoader').style.display = 'none';
-          if (res && res.success) {
-            allTasksCached = res.tasks;
-            populateStatsBarSelect(res.bars);
-            populateStatsMonthSelect(res.tasks);
-            populateStatsTypeSelect(res.tasks);
-            document.getElementById('statsContent').style.display = 'block';
-            renderStatistics();
-          } else {
-            alert('Ошибка загрузки статистики: ' + (res ? res.error : 'Неизвестная ошибка'));
-          }
-        })
-        .withFailureHandler(function(err) {
-          document.getElementById('statsLoader').style.display = 'none';
-          alert('Сбой связи при загрузке статистики: ' + err.toString());
-        })
-        .getStatisticsData(currentRegion, currentAuthToken);
+            if (res && res.success) {
+              allTasksCached = res.tasks;
+              populateStatsBarSelect(res.bars);
+              populateStatsMonthSelect(res.tasks);
+              populateStatsTypeSelect(res.tasks);
+              document.getElementById('statsContent').style.display = 'block';
+              renderStatistics();
+            } else {
+              alert('Ошибка загрузки статистики: ' + (res ? res.error : 'Неизвестная ошибка'));
+            }
+          })
+          .withFailureHandler(function(err) {
+            document.getElementById('statsLoader').style.display = 'none';
+            alert('Сбой связи при загрузке статистики: ' + err.toString());
+          })
+          .getStatisticsData(currentRegion, currentAuthToken);
+      }, 50);
     }
 
     function populateStatsBarSelect(bars) {
