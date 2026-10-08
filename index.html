@@ -4,6 +4,17 @@
   <base target="_top">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- PWA Meta Tags & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tasks">
+  <meta name="theme-color" content="#121212">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
   <!-- Chart.js загружается в фоне, не блокируя запуск приложения -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js" defer></script>
@@ -1509,28 +1520,56 @@
     }
 
     function fetchHistoryData(barTarget) {
-      document.getElementById('tasksListContainer').innerHTML = '';
-      document.getElementById('historyLoader').style.display = 'block';
-      document.getElementById('filterDateFrom').value = '';
-      document.getElementById('filterDateTo').value = '';
-      document.getElementById('filterStatus').value = 'active';
-      document.getElementById('filterType').value = 'all';
-      document.getElementById('filterInitiator').value = '';
-      resultFilesCache = {};
+      const cacheKey = 'cached_history_' + currentRegion + '_' + barTarget;
+      const cachedData = localStorage.getItem(cacheKey);
+      let renderedFromCache = false;
+
+      if (cachedData) {
+        try {
+          const parsed = JSON.parse(cachedData);
+          if (parsed && Array.isArray(parsed)) {
+            allTasksCached = parsed;
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            document.getElementById('filterStatus').value = 'active';
+            document.getElementById('filterType').value = 'all';
+            document.getElementById('filterInitiator').value = '';
+            resultFilesCache = {};
+            applyFilters();
+            renderedFromCache = true;
+          }
+        } catch(e) {}
+      }
+
+      if (!renderedFromCache) {
+        document.getElementById('tasksListContainer').innerHTML = '';
+        document.getElementById('historyLoader').style.display = 'block';
+        document.getElementById('filterDateFrom').value = '';
+        document.getElementById('filterDateTo').value = '';
+        document.getElementById('filterStatus').value = 'active';
+        document.getElementById('filterType').value = 'all';
+        document.getElementById('filterInitiator').value = '';
+        resultFilesCache = {};
+      }
 
       google.script.run
         .withSuccessHandler(function(response) {
           document.getElementById('historyLoader').style.display = 'none';
           if(response && response.success) {
             allTasksCached = response.tasks;
+            try {
+              localStorage.setItem(cacheKey, JSON.stringify(response.tasks));
+            } catch(e) {}
             applyFilters();
-          } else {
+          } else if (!renderedFromCache) {
             document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px;">Ошибка загрузки истории.</div>';
           }
         })
         .withFailureHandler(function(err) {
           document.getElementById('historyLoader').style.display = 'none';
-          document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px; color:var(--danger-color);">Сбой связи: ' + err.toString() + '</div>';
+          if (!renderedFromCache) {
+            document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px; color:var(--danger-color);">Сбой связи: ' + err.toString() + '</div>';
+          }
         })
         .getBarTasks(barTarget, currentRegion, currentAuthToken);
     }
