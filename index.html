@@ -972,6 +972,7 @@
         .checkAdminPassword(pwd);
     }
 
+    let globalTransitionTimeout = null;
     function triggerHaptic() {
       if (navigator.vibrate) {
         navigator.vibrate(15);
@@ -979,11 +980,14 @@
     }
 
     function transitionScreen(hideIds, showId, displayType = 'block') {
-      const screensToHide = hideIds.map(id => document.getElementById(id)).filter(el => el && el.style.display !== 'none');
+      if (globalTransitionTimeout) {
+        clearTimeout(globalTransitionTimeout);
+      }
 
+      const screensToHide = hideIds.map(id => document.getElementById(id)).filter(el => el && el.style.display !== 'none');
       screensToHide.forEach(el => { el.style.opacity = '0'; });
 
-      setTimeout(() => {
+      globalTransitionTimeout = setTimeout(() => {
         screensToHide.forEach(el => { el.style.display = 'none'; });
         const target = document.getElementById(showId);
         if (target) {
