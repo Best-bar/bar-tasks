@@ -15,9 +15,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 
-  <!-- Chart.js загружается в фоне, не блокируя запуск приложения -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js" defer></script>
+  <!-- Внешние библиотеки подгружаются только при первом использовании. -->
   <style>
     #initialAppLoader {
       position: fixed;
@@ -97,9 +95,9 @@
       flex-direction: column;
     }
 
-    #regionScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1; }
-    #mainScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1; }
-    #formScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1; }
+    #regionScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; transition: opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); opacity: 1; }
+    #mainScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; display: none; transition: opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); opacity: 1; }
+    #formScreen { padding: 15px; overflow-y: auto; height: 100%; box-sizing: border-box; transition: opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); opacity: 1; }
 
     h1, h2 { text-align: center; font-weight: 600; letter-spacing: -0.5px; margin-top: 5px; }
     h1 { margin-bottom: 20px; font-size: 24px; }
@@ -139,7 +137,7 @@
       -webkit-backdrop-filter: blur(20px);
       text-align: center;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     .region-btn:active {
       background: var(--accent-color);
@@ -153,7 +151,7 @@
       background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);
       padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 500; cursor: pointer;
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); text-align: center;
-      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     .bar-btn:active { background: var(--accent-color); border-color: var(--accent-color); transform: scale(0.95); opacity: 0.8; }
 
@@ -161,7 +159,7 @@
       width: 100%; background: rgba(10, 132, 255, 0.12); border: 1px solid var(--accent-color);
       color: var(--accent-color); padding: 12px; border-radius: 10px; font-size: 14px;
       font-weight: 600; cursor: pointer; margin-bottom: 18px;
-      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     .btn-history-inside:active { transform: scale(0.95); opacity: 0.8; }
 
@@ -180,7 +178,7 @@
       text-align: center;
       box-sizing: border-box;
       box-shadow: 0 4px 12px rgba(10, 132, 255, 0.2);
-      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     .btn-all-tasks:active {
       background: var(--accent-color);
@@ -202,7 +200,7 @@
       text-align: center;
       box-sizing: border-box;
       box-shadow: 0 4px 12px rgba(255, 188, 0, 0.15);
-      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     .btn-stats:active {
       background: rgba(255, 188, 0, 0.3);
@@ -237,7 +235,7 @@
 
     .history-card {
       display: none; height: 100vh; flex-direction: column; box-sizing: border-box; background: rgba(25,25,25,0.95);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1;
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); transition: opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); opacity: 1;
     }
 
     .history-header-fixed {
@@ -282,9 +280,9 @@
     input[type="file"] { display: none; }
     .file-list { margin-top: 6px; font-size: 13px; color: var(--text-secondary); }
 
-    .btn-submit { background: var(--accent-color); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    .btn-submit { background: var(--accent-color); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); }
     .btn-submit:active { transform: scale(0.95); opacity: 0.8; }
-    .btn-back { background: transparent; color: var(--danger-color); border: 1px solid rgba(255, 69, 58, 0.23); padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    .btn-back { background: transparent; color: var(--danger-color); border: 1px solid rgba(255, 69, 58, 0.23); padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); }
     .btn-back:active { transform: scale(0.95); opacity: 0.8; }
 
     .filter-section { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 8px; padding: 5px; margin-bottom: 5px; }
@@ -310,7 +308,7 @@
 
     .stats-screen-card {
       display: none; height: 100vh; flex-direction: column; box-sizing: border-box; background: rgba(20,20,22,0.98);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); opacity: 1;
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); transition: opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); opacity: 1;
     }
     .stats-grid-summary {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;
@@ -901,6 +899,12 @@
     };
 
     // Начальный пользователь по умолчанию - обычный
+    function escapeHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>\"']/g, function(ch) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', "'": '&#39;' })[ch];
+      });
+    }
+
     let currentUser = { email: "", isAdmin: false, role: "requester" };
     let currentAuthToken = "";
     let currentRegion = "moscow"; // 'moscow' или 'regions'
@@ -929,12 +933,15 @@
       updateUserUI();
       initLazyScrollListener();
 
-      // Скрываем лоадер мгновенно, так как больше не ждем серверного ответа
-      const loader = document.getElementById('initialAppLoader');
-      if (loader) {
-         loader.style.opacity = '0';
-         setTimeout(() => { loader.style.display = 'none'; }, 300);
-      }
+      // Получаем бесплатную пользовательскую сессию до первых запросов к таблице.
+      // Обычному пользователю вводить пароль не нужно; пароль запрашивается только для админ-доступа.
+      initializeAuth(function() {
+        const loader = document.getElementById('initialAppLoader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => { loader.style.display = 'none'; }, 180);
+        }
+      });
     });
 
     function promptAdminPassword() {
@@ -972,7 +979,6 @@
         .checkAdminPassword(pwd);
     }
 
-    let globalTransitionTimeout = null;
     function triggerHaptic() {
       if (navigator.vibrate) {
         navigator.vibrate(15);
@@ -980,14 +986,11 @@
     }
 
     function transitionScreen(hideIds, showId, displayType = 'block') {
-      if (globalTransitionTimeout) {
-        clearTimeout(globalTransitionTimeout);
-      }
-
       const screensToHide = hideIds.map(id => document.getElementById(id)).filter(el => el && el.style.display !== 'none');
+
       screensToHide.forEach(el => { el.style.opacity = '0'; });
 
-      globalTransitionTimeout = setTimeout(() => {
+      setTimeout(() => {
         screensToHide.forEach(el => { el.style.display = 'none'; });
         const target = document.getElementById(showId);
         if (target) {
@@ -995,7 +998,7 @@
           target.style.opacity = '0';
           setTimeout(() => { target.style.opacity = '1'; }, 20);
         }
-      }, 600);
+      }, 180);
     }
 
     function updateUserUI() {
@@ -1024,33 +1027,55 @@
       }
     }
 
+    let authInitializationInProgress = false;
+    let authInitializationCallbacks = [];
+
     function initializeAuth(callback) {
       if (currentAuthToken) {
         if (callback) callback();
         return;
       }
+      if (callback) authInitializationCallbacks.push(callback);
+      if (authInitializationInProgress) return;
+      authInitializationInProgress = true;
+
+      const finish = function(success) {
+        authInitializationInProgress = false;
+        const callbacks = authInitializationCallbacks.splice(0);
+        if (success) callbacks.forEach(function(fn) { try { fn(); } catch (e) { console.error(e); } });
+      };
 
       google.script.run
         .withSuccessHandler(function(res) {
           if (res && res.success && res.token) {
             currentAuthToken = res.token;
-            currentUser.email = (res.user && (res.user.name || res.user.login)) || '';
+            currentUser.email = (res.user && (res.user.name || res.user.login)) || 'Пользователь';
             currentUser.role = 'requester';
             currentUser.isAdmin = false;
             updateUserUI();
-            if (callback) callback();
+            finish(true);
           } else {
-            alert('Не удалось получить сессию пользователя.');
+            const loader = document.getElementById('initialAppLoader');
+            if (loader) loader.style.display = 'none';
+            alert('Не удалось получить пользовательскую сессию. ' + ((res && res.error) || 'Попробуйте обновить страницу.'));
+            finish(false);
           }
         })
         .withFailureHandler(function(err) {
-          alert('Ошибка авторизации: ' + err.toString());
+          const loader = document.getElementById('initialAppLoader');
+          if (loader) loader.style.display = 'none';
+          alert('Ошибка подключения к приложению: ' + (err && err.message ? err.message : String(err)));
+          finish(false);
         })
         .getRequesterAuthToken();
     }
 
     function selectRegion(region) {
       triggerHaptic();
+      if (!currentAuthToken) {
+        initializeAuth(function() { selectRegion(region); });
+        return;
+      }
       currentRegion = region;
       const regionName = (region === 'moscow' || region === 'Москва') ? 'Москва' : 'Регионы';
 
@@ -1236,6 +1261,38 @@
     }
 
     let filesProcessing = false;
+    let chartJsPromise = null;
+    let heic2anyPromise = null;
+
+    function loadExternalScriptOnce(src, testFn, promiseRefSetter) {
+      if (testFn()) return Promise.resolve();
+      return new Promise(function(resolve, reject) {
+        const existing = document.querySelector('script[data-lazy-src="' + src + '"]');
+        const script = existing || document.createElement('script');
+        script.onload = function() { testFn() ? resolve() : reject(new Error('Библиотека не загрузилась: ' + src)); };
+        script.onerror = function() { reject(new Error('Не удалось загрузить библиотеку: ' + src)); };
+        if (!existing) {
+          script.src = src;
+          script.async = true;
+          script.setAttribute('data-lazy-src', src);
+          document.head.appendChild(script);
+        }
+      });
+    }
+
+    function ensureChartJs() {
+      if (typeof Chart !== 'undefined') return Promise.resolve();
+      if (!chartJsPromise) chartJsPromise = loadExternalScriptOnce('https://cdn.jsdelivr.net/npm/chart.js', function() { return typeof Chart !== 'undefined'; })
+        .catch(function(err) { chartJsPromise = null; throw err; });
+      return chartJsPromise;
+    }
+
+    function ensureHeic2Any() {
+      if (typeof heic2any !== 'undefined') return Promise.resolve();
+      if (!heic2anyPromise) heic2anyPromise = loadExternalScriptOnce('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js', function() { return typeof heic2any !== 'undefined'; })
+        .catch(function(err) { heic2anyPromise = null; throw err; });
+      return heic2anyPromise;
+    }
 
     function isHeicFile(file) {
       const name = (file.name || '').toLowerCase();
@@ -1253,12 +1310,14 @@
     }
 
     async function compressImageFile(file, maxDim = 1280, quality = 0.7) {
-      if (isHeicFile(file) && typeof heic2any !== 'undefined') {
+      if (isHeicFile(file)) {
         try {
+          await ensureHeic2Any();
           const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.8 });
           file = new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
         } catch (e) {
           console.error("HEIC conversion failed:", e);
+          throw new Error('Не удалось преобразовать HEIC-фото. Сохраните его как JPG и повторите загрузку.');
         }
       }
       return readFileAsDataURL(file).then(dataUrl => new Promise((resolve, reject) => {
@@ -1341,24 +1400,28 @@
       }
     }
 
-    // Функция для асинхронной загрузки файлов по одному
+    // Загружаем по 3 фото параллельно: быстрее, но не создаём чрезмерную нагрузку на Drive.
     async function uploadFilesInBatches(files) {
-      const uploadedUrls = [];
-      for (let i = 0; i < files.length; i++) {
-        // Обновляем текст кнопки
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) submitBtn.textContent = `Загрузка фото (${i + 1} из ${files.length})...`;
-
-        try {
+      const uploadedUrls = new Array(files.length);
+      let nextIndex = 0;
+      const workerCount = Math.min(3, files.length);
+      async function worker() {
+        while (true) {
+          const index = nextIndex++;
+          if (index >= files.length) return;
+          const submitBtn = document.getElementById('submitBtn');
+          if (submitBtn) submitBtn.textContent = 'Загрузка фото (' + (index + 1) + ' из ' + files.length + ')...';
           const url = await new Promise((resolve, reject) => {
             google.script.run
-              .withSuccessHandler(res => resolve(res))
-              .withFailureHandler(err => reject(err))
-              .uploadSingleFile(files[i], currentAuthToken);
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .uploadSingleFile(files[index], currentAuthToken);
           });
-          if (url) uploadedUrls.push(url);
-        } catch(e) { console.error("Upload failed for file", i, e); }
+          if (!url || typeof url !== 'string') throw new Error('Не удалось загрузить фотографию: ' + (index + 1));
+          uploadedUrls[index] = url;
+        }
       }
+      await Promise.all(Array.from({ length: workerCount }, () => worker()));
       return uploadedUrls;
     }
 
@@ -1602,7 +1665,7 @@
             } catch(e) {}
             applyFilters();
           } else if (!renderedFromCache) {
-            document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px;">Ошибка загрузки истории.</div>';
+            document.getElementById('tasksListContainer').innerHTML = '<div style="text-align:center; padding:15px; color:var(--danger-color);">Ошибка загрузки истории: ' + escapeHtml((response && response.error) || 'сервер вернул пустой ответ') + '</div>';
           }
         })
         .withFailureHandler(function(err) {
@@ -2255,8 +2318,9 @@
     /* ==========================================================
        ЛОГИКА РАБОТЫ ЭКРАНА СТАТИСТИКИ
        ========================================================== */
-    function openStatisticsScreen() {
+    async function openStatisticsScreen() {
       triggerHaptic();
+      try { await ensureChartJs(); } catch (e) { alert('Не удалось загрузить библиотеку графиков: ' + e.message); return; }
       const regionLabel = currentRegion === 'regions' ? 'Регионы' : 'Москва';
       document.getElementById('statsTitle').innerText = "📊 Аналитика (" + regionLabel + ")";
 
