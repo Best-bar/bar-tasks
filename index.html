@@ -446,7 +446,7 @@
           <span id="userAccountRoleIcon">👤</span>
           <span id="userAccountText" style="color: var(--text-color); font-weight: 500;">Аккаунт</span>
         </div>
-        <span id="userAccountRoleBadge" onclick="promptAdminPassword()" style="background: rgba(10, 132, 255, 0.15); color: var(--accent-color); border: 1px solid var(--accent-color); padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">Пользователь</span>
+        <span id="userAccountRoleBadge" onclick="promptAdminPassword()" style="background: rgba(10, 132, 255, 0.15); color: var(--accent-color); border: 1px solid var(--accent-color); padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">Войти как администратор</span>
       </div>
 
       <a href="#" target="_blank" class="btn-instruction" id="instructionLink">
@@ -905,7 +905,7 @@
       });
     }
 
-    let currentUser = { email: "", isAdmin: false, role: "requester" };
+    let currentUser = { email: "", isAdmin: false, role: "guest" };
     let currentAuthToken = "";
     let currentRegion = "moscow"; // 'moscow' или 'regions'
     let selectedFiles = [];
@@ -933,48 +933,48 @@
       updateUserUI();
       initLazyScrollListener();
 
-      // Получаем бесплатную пользовательскую сессию до первых запросов к таблице.
-      // Обычному пользователю вводить пароль не нужно; пароль запрашивается только для админ-доступа.
-      initializeAuth(function() {
-        const loader = document.getElementById('initialAppLoader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => { loader.style.display = 'none'; }, 180);
-        }
-      });
+      // Обычный доступ не требует отдельной авторизации: не ждём ответа сервера при запуске.
+      const loader = document.getElementById('initialAppLoader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 80);
+      }
     });
 
+    let adminCheckInProgress = false;
+
     function promptAdminPassword() {
-      if (currentUser.isAdmin) return;
+      if (currentUser.isAdmin || adminCheckInProgress) return;
       const pwd = prompt("Введите пароль администратора:");
       if (!pwd) return;
 
-      const loader = document.getElementById('initialAppLoader');
-      if(loader) {
-         loader.style.display = 'flex';
-         loader.querySelector('div:nth-child(2)').innerText = 'Проверка пароля...';
-      }
+      adminCheckInProgress = true;
+      const badge = document.getElementById('userAccountRoleBadge');
+      if (badge) badge.innerText = 'Проверка...';
 
       google.script.run
         .withSuccessHandler(function(isValid) {
-          if(loader) loader.style.display = 'none';
+          adminCheckInProgress = false;
           if (isValid && isValid.success && isValid.token) {
             currentAuthToken = isValid.token;
             currentUser.isAdmin = true;
             currentUser.role = 'admin';
             currentUser.email = (isValid.user && (isValid.user.name || isValid.user.login)) || 'Администратор';
             updateUserUI();
-            alert("Права администратора успешно предоставлены.");
-            if (document.getElementById('mainScreen').style.display === 'block') {
-                loadBarsData(currentRegion); // перезагружаем список, чтобы появились права
+            // Используем уже загруженные бары; повторный запрос к серверу не нужен.
+            if (document.getElementById('mainScreen').style.display === 'block' && loadedBarsList.length) {
+              renderBars({ success: true, bars: loadedBarsList });
             }
+            if (document.getElementById('historyScreen').style.display !== 'none') applyFilters();
           } else {
+            updateUserUI();
             alert("Неверный пароль.");
           }
         })
         .withFailureHandler(function(err) {
-           if(loader) loader.style.display = 'none';
-           alert("Ошибка соединения: " + err);
+          adminCheckInProgress = false;
+          updateUserUI();
+          alert("Ошибка соединения: " + (err && err.message ? err.message : String(err)));
         })
         .checkAdminPassword(pwd);
     }
@@ -1017,65 +1017,20 @@
         }
       } else {
         if (iconEl) iconEl.innerText = '👤';
-        if (textEl) textEl.innerText = currentUser.email || 'Пользователь';
+        if (textEl) textEl.innerText = 'Общий доступ';
         if (badgeEl) {
-          badgeEl.innerText = 'Пользователь';
+          badgeEl.innerText = adminCheckInProgress ? 'Проверка...' : 'Войти как администратор';
           badgeEl.style.background = 'rgba(10, 132, 255, 0.15)';
           badgeEl.style.color = 'var(--accent-color)';
           badgeEl.style.borderColor = 'var(--accent-color)';
         }
       }
-    }
-
-    let authInitializationInProgress = false;
-    let authInitializationCallbacks = [];
-
-    function initializeAuth(callback) {
-      if (currentAuthToken) {
-        if (callback) callback();
-        return;
-      }
-      if (callback) authInitializationCallbacks.push(callback);
-      if (authInitializationInProgress) return;
-      authInitializationInProgress = true;
-
-      const finish = function(success) {
-        authInitializationInProgress = false;
-        const callbacks = authInitializationCallbacks.splice(0);
-        if (success) callbacks.forEach(function(fn) { try { fn(); } catch (e) { console.error(e); } });
-      };
-
-      google.script.run
-        .withSuccessHandler(function(res) {
-          if (res && res.success && res.token) {
-            currentAuthToken = res.token;
-            currentUser.email = (res.user && (res.user.name || res.user.login)) || 'Пользователь';
-            currentUser.role = 'requester';
-            currentUser.isAdmin = false;
-            updateUserUI();
-            finish(true);
-          } else {
-            const loader = document.getElementById('initialAppLoader');
-            if (loader) loader.style.display = 'none';
-            alert('Не удалось получить пользовательскую сессию. ' + ((res && res.error) || 'Попробуйте обновить страницу.'));
-            finish(false);
-          }
-        })
-        .withFailureHandler(function(err) {
-          const loader = document.getElementById('initialAppLoader');
-          if (loader) loader.style.display = 'none';
-          alert('Ошибка подключения к приложению: ' + (err && err.message ? err.message : String(err)));
-          finish(false);
-        })
-        .getRequesterAuthToken();
+      const statsButton = document.querySelector('.btn-stats');
+      if (statsButton) statsButton.style.display = currentUser.isAdmin ? '' : 'none';
     }
 
     function selectRegion(region) {
       triggerHaptic();
-      if (!currentAuthToken) {
-        initializeAuth(function() { selectRegion(region); });
-        return;
-      }
       currentRegion = region;
       const regionName = (region === 'moscow' || region === 'Москва') ? 'Москва' : 'Регионы';
 
@@ -2023,6 +1978,10 @@
                 t.comment = response.updatedComment;
               }
             });
+            try {
+              const historyTarget = isAllBarsMode ? 'ALL' : currentActiveBar;
+              localStorage.setItem('cached_history_' + currentRegion + '_' + historyTarget, JSON.stringify(allTasksCached));
+            } catch (e) {}
           } else {
             alert("Ошибка при сохранении: " + (response ? response.error : "Неизвестная ошибка"));
           }
