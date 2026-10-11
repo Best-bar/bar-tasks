@@ -448,6 +448,19 @@
       margin-top: 8px; padding-top: 6px; border-top: 1px dashed rgba(255, 255, 255, 0.15);
       display: flex; flex-wrap: wrap; gap: 6px;
     }
+    .admin-comment-edit-box { display: none; margin-top: 6px; }
+    .admin-comment-edit-box textarea {
+      width: 100%; min-height: 100px; box-sizing: border-box; resize: vertical;
+      padding: 8px; border-radius: 7px; border: 1px solid var(--accent-color);
+      background: rgba(0,0,0,0.22); color: #fff; font: inherit; font-size: 12px;
+      line-height: 1.4;
+    }
+    .admin-comment-edit-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+    .admin-comment-edit-actions button {
+      border-radius: 6px; padding: 5px 9px; border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.06); color: #fff; cursor: pointer; font-size: 11.5px;
+    }
+    .admin-comment-edit-actions .save-admin-comment { background: rgba(48,209,88,0.15); border-color: #30d158; color: #30d158; }
   </style>
 </head>
 <body>
@@ -1833,6 +1846,16 @@
       let commentHtml = `
         <div class="comment-container">
           <div class="comment-history-list" id="commentList_${safeId}" style="${hasComment ? '' : 'display:none;'}">${task.comment || ''}</div>
+          ${currentUser && currentUser.isAdmin ? `
+            <button type="button" class="photo-link" style="margin-top:4px; color:#ffd60a; border-color:rgba(255,188,0,0.4);" onclick="openAdminCommentEdit('${safeId}')">✏️ Редактировать комментарии</button>
+            <div class="admin-comment-edit-box" id="adminCommentEditBox_${safeId}">
+              <textarea id="adminCommentEditText_${safeId}" aria-label="Редактирование комментариев">${escapeHtml(task.comment || '')}</textarea>
+              <div class="admin-comment-edit-actions">
+                <button type="button" class="save-admin-comment" id="adminCommentSave_${safeId}" onclick="saveAdminCommentEdit('${task.barName}', ${task.rowIdx}, '${safeId}')">💾 Сохранить</button>
+                <button type="button" onclick="cancelAdminCommentEdit('${safeId}')">Отмена</button>
+              </div>
+            </div>
+          ` : ''}
           <div class="comment-box">
             <input type="text" id="commentInput_${safeId}" placeholder="Комментарий...">
             <button type="button" id="btnCommentSubmit_${safeId}" class="btn-comment-submit" onclick="saveCommentOnly('${task.barName}', ${task.rowIdx}, '${safeId}')">ОК</button>
@@ -1964,6 +1987,67 @@
         if (fileName) fileName.innerText = '';
         alert('Не удалось обработать фотографии: ' + err.message);
       }
+    }
+
+    function openAdminCommentEdit(safeId) {
+      if (!currentUser || !currentUser.isAdmin) return;
+      const box = document.getElementById(`adminCommentEditBox_${safeId}`);
+      const editor = document.getElementById(`adminCommentEditText_${safeId}`);
+      const list = document.getElementById(`commentList_${safeId}`);
+      if (!box || !editor) return;
+      if (list) editor.value = list.innerText || '';
+      box.style.display = 'block';
+      editor.focus();
+    }
+
+    function cancelAdminCommentEdit(safeId) {
+      const box = document.getElementById(`adminCommentEditBox_${safeId}`);
+      const editor = document.getElementById(`adminCommentEditText_${safeId}`);
+      const list = document.getElementById(`commentList_${safeId}`);
+      if (editor && list) editor.value = list.innerText || '';
+      if (box) box.style.display = 'none';
+    }
+
+    function saveAdminCommentEdit(barName, rowIdx, safeId) {
+      if (!currentUser || !currentUser.isAdmin) {
+        alert('Редактирование комментариев доступно только администратору.');
+        return;
+      }
+      const editor = document.getElementById(`adminCommentEditText_${safeId}`);
+      const saveBtn = document.getElementById(`adminCommentSave_${safeId}`);
+      if (!editor) return;
+      const commentText = editor.value;
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.innerText = '⏳ Сохранение...'; }
+      google.script.run
+        .withSuccessHandler(function(response) {
+          if (saveBtn) { saveBtn.disabled = false; saveBtn.innerText = '💾 Сохранить'; }
+          if (!response || !response.success) {
+            alert('Не удалось сохранить комментарии: ' + (response && response.error ? response.error : 'Неизвестная ошибка'));
+            return;
+          }
+          const commentList = document.getElementById(`commentList_${safeId}`);
+          if (commentList) {
+            commentList.innerText = response.updatedComment || '';
+            commentList.style.display = response.updatedComment ? 'block' : 'none';
+          }
+          allTasksCached.forEach(function(task) {
+            if (task.barName === barName && Number(task.rowIdx) === Number(rowIdx)) {
+              task.comment = response.updatedComment || '';
+              task.inWork = task.comment.includes('[В работе]');
+            }
+          });
+          try {
+            const historyTarget = isAllBarsMode ? 'ALL' : currentActiveBar;
+            localStorage.setItem('cached_history_' + currentRegion + '_' + historyTarget, JSON.stringify(allTasksCached));
+          } catch (e) {}
+          const box = document.getElementById(`adminCommentEditBox_${safeId}`);
+          if (box) box.style.display = 'none';
+        })
+        .withFailureHandler(function(error) {
+          if (saveBtn) { saveBtn.disabled = false; saveBtn.innerText = '💾 Сохранить'; }
+          alert('Ошибка при сохранении комментариев: ' + (error && error.message ? error.message : String(error)));
+        })
+        .adminUpdateTaskComment(barName, rowIdx, commentText, currentRegion, currentAuthToken);
     }
 
     function saveCommentOnly(barName, rowIdx, safeId) {
